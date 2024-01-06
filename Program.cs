@@ -1,49 +1,44 @@
-using System;
-
-// Employee class with Id, FirstName, and LastName properties
-public class Employee
+public ActionResult Create(InsureeViewModel viewModel)
 {
-    // Properties
-    public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    // Assuming you have a ViewModel named InsureeViewModel
+    decimal baseQuote = 50;
 
-    // Constructor to initialize properties
-    public Employee(int id, string firstName, string lastName)
-    {
-        Id = id;
-        FirstName = firstName;
-        LastName = lastName;
-    }
+    // Age logic
+    if (viewModel.Age <= 18)
+        baseQuote += 100;
+    else if (viewModel.Age >= 19 && viewModel.Age <= 25)
+        baseQuote += 50;
+    else
+        baseQuote += 25;
 
-    // Overloading the "==" operator to compare Employee objects based on their Id property
-    public static bool operator ==(Employee employee1, Employee employee2)
-    {
-        // Check if both objects are null or if their Id properties are equal
-        return ReferenceEquals(employee1, null) && ReferenceEquals(employee2, null) ||
-               !ReferenceEquals(employee1, null) && !ReferenceEquals(employee2, null) && employee1.Id == employee2.Id;
-    }
+    // Car year logic
+    if (viewModel.CarYear < 2000)
+        baseQuote += 25;
+    else if (viewModel.CarYear > 2015)
+        baseQuote += 25;
 
-    // Overloading the "!=" operator to complement the "==" operator
-    public static bool operator !=(Employee employee1, Employee employee2)
-    {
-        // Invert the result of the "==" operator
-        return !(employee1 == employee2);
-    }
-}
+    // Car Make logic
+    if (viewModel.CarMake == "Porsche")
+        baseQuote += 25;
 
-class Program
-{
-    static void Main()
-    {
-        // Instantiate two Employee objects and assign values to their properties
-        Employee employee1 = new Employee(1, "John", "Doe");
-        Employee employee2 = new Employee(2, "Jane", "Doe");
+    // Car Model logic
+    if (viewModel.CarMake == "Porsche" && viewModel.CarModel == "911 Carrera")
+        baseQuote += 25;
 
-        // Compare the two Employee objects using the overloaded operators
-        bool areEqual = employee1 == employee2;
+    // Speeding ticket logic
+    baseQuote += viewModel.SpeedingTickets * 10;
 
-        // Display the results
-        Console.WriteLine("Employees are equal: " + areEqual);
-    }
+    // DUI logic
+    if (viewModel.HasDUI)
+        baseQuote += baseQuote * 0.25;
+
+    // Full coverage logic
+    if (viewModel.FullCoverage)
+        baseQuote += baseQuote * 0.5;
+
+    // Now, you have the calculated quote in the 'baseQuote' variable
+
+    // Rest of your code to save to the database, redirect, etc.
+
+    return View();
 }
