@@ -1,0 +1,96 @@
+@model IEnumerable<iziConference.Models.EventAttendee>
+
+<h2>Participantes.</h2>
+<br />
+<button><a style="text-decoration: none" href='@Url.Action("Create", new { eventId = ViewBag.EventId })'>Criar Participante</a></button>
+<button id="at-btn-refresh"> Actualizar</button>
+<input id="eventId" type="hidden" value="@ViewBag.EventId">
+<table id="at-attendees-list" cellpadding="10" border="1" class="row-border stripe">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Estado  </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="at-line-@item.Attendee_Id">
+                <td style="padding: 5px">
+                    @Html.DisplayFor(modelItem => item.Attendee.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttendeeType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attendee.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attendee.Email)
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <button id="at-active-status-@item.Attendee_Id" class="at-btn-active-state active" data-attendee-id="@item.Attendee_Id" data-attendee-name="@item.Attendee.Name" data-active-new-state="false" data-show-confirmation-alert="true">Desactivar</button>
+                    }
+                    else
+                    {
+                        <button id="at-active-status-@item.Attendee_Id" class="at-btn-active-state inactive" data-attendee-id="@item.Attendee_Id" data-attendee-name="@item.Attendee.Name" data-active-new-state="true" data-show-confirmation-alert="true">Activar</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+Loaded by script:
+
+var _atteendeesList = "at-attendees-list";
+
+ $("#" + _atteendeesList).DataTable({
+    "paging": false,
+    "info": false,
+    "language": {
+        "search": "Pesquisar:",
+        "info": "Participantes inscritos: _PAGES_"
+    }
+ });
+Using the default _Layout.cshtml:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>izigo Conference - Gestor de Conteúdos</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <section id="login">
+                @Html.Partial(MVC.Account.Views._LoginPartial)
+            </section>
+            <div style="padding: 10px;">
+                @if (Request.IsAuthenticated)
+                {
+                    <nav>
+                        <ul id="menu">
+                            <li>@Html.ActionLink("Home", MVC.Home.Index())</li>
+                            <li>@Html.ActionLink("Participantes", MVC.Attendee.Index())</li>
+                            <li>@Html.ActionLink("Check-in", MVC.Checkin.Index())</li>
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
